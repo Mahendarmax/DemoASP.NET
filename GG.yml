@@ -37,16 +37,15 @@ stages:
               feedsToUse: 'config'
               nugetConfigPath: 'NuGet.config'
               projects: '$(RestoreBuildProjects)'
-              arguments: '--configuration $(BuildConfiguration) --output $(System.DefaultWorkingDirectory)'
-
-        
+              arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
 
           - powershell: |
               New-Item -ItemType Directory -Path $(ArtifactFolder) -Force
-              Move-Item -Path "$(Build.ArtifactStagingDirectory)\*" -Destination $(ArtifactFolder)
+              Move-Item -Path "$(System.DefaultWorkingDirectory)\*" -Destination $(ArtifactFolder)
             displayName: 'Move artifacts to folder'
 
-          - task: PublishBuildArtifacts@1
-            displayName: 'Publish Artifact'
+          - task: CopyFiles@2
             inputs:
-              PathtoPublish: '$(ArtifactFolder)'
+              SourceFolder: '$(build.artifactstagingdirectory)'
+              Contents: '**'
+              TargetFolder: '$(ArtifactFolder)'
