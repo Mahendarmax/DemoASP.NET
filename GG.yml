@@ -46,7 +46,7 @@ stages:
                   Write-Host "Waiting for file locks to release..."
                   Start-Sleep -Seconds 10
               }
-              Move-Item -Path "$(System.DefaultWorkingDirectory)\*" -Destination $(ArtifactFolder)
+              Move-Item -Path "$(build.artifactstagingdirectory)\*" -Destination $(ArtifactFolder)
             displayName: 'Move artifacts to folder'
 
           - task: CopyFiles@2
