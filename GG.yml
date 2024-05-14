@@ -39,6 +39,15 @@ stages:
               projects: '$(RestoreBuildProjects)'
               arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
 
+
+          - task: UseDotNet@2
+            displayName: 'Publish'
+            inputs:
+              command: 'publish'
+              publishWebProjects: false
+              projects: '$(RestoreBuildProjects)'
+              arguments: '--configuration $(BuildConfiguration) --runtime $(targetRuntime) --output $(System.DefaultWorkingDirectory)'
+
           - powershell: |
               New-Item -ItemType Directory -Path $(ArtifactFolder) -Force
               $lockFilePath = Join-Path $(System.DefaultWorkingDirectory) 'lockfile.lock'
