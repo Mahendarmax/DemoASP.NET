@@ -23,18 +23,18 @@ stages:
               includePreviewVersions: true  # Required for preview versions
 
           - task: UseDotNet@2
-            displayName: Restore
+            displayName: 'Restore'
             inputs:
               command: 'restore'
               projects: '$(RestoreBuildProjects)'
               feedsToUse: 'select'
 
           - task: UseDotNet@2
-            displayName: Build
+            displayName: 'Build'
             inputs:
               command: 'build'
-              feedsToUse: config
-              nugetConfigPath: NuGet.config
+              feedsToUse: 'config'
+              nugetConfigPath: 'NuGet.config'
               projects: '$(RestoreBuildProjects)'
               arguments: '--configuration $(BuildConfiguration)'
 
@@ -50,5 +50,5 @@ stages:
           - task: PublishBuildArtifacts@1
             displayName: 'Publish Artifact'
             inputs:
-              PathtoPublish: '$(build.artifactstagingdirectory)'
-              condition: succeededOrFailed()
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/drop'
+            
