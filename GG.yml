@@ -13,6 +13,7 @@ stages:
         variables:
           RestoreBuildProjects: '**/*.csproj'
           targetRuntime: 'win-x64'
+          ArtifactFolder: '$(System.DefaultWorkingDirectory)/artifacts'
 
         steps:
           - task: UseDotNet@2
@@ -47,7 +48,12 @@ stages:
               arguments: '--configuration $(BuildConfiguration) --runtime $(targetRuntime) --output $(Build.ArtifactStagingDirectory)'
               zipAfterPublish: true
 
+          - powershell: |
+              New-Item -ItemType Directory -Path $(ArtifactFolder) -Force
+              Move-Item -Path "$(Build.ArtifactStagingDirectory)\*" -Destination $(ArtifactFolder)
+            displayName: 'Move artifacts to folder'
+
           - task: PublishBuildArtifacts@1
             displayName: 'Publish Artifact'
             inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              PathtoPublish: '$(ArtifactFolder)'
