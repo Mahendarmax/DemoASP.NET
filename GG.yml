@@ -16,21 +16,21 @@ stages:
           ArtifactFolder: '$(System.DefaultWorkingDirectory)/artifacts'
 
         steps:
-          - task: UseDotNet@2
+          - task: UseNode@1
             displayName: 'Install .NET Core SDK.'
             inputs:
               version: 8.0.204
               performMultiLevelLookup: true
               includePreviewVersions: true  # Required for preview versions
 
-          - task: UseDotNet@2
+          - task: UseNode@1
             displayName: 'Restore'
             inputs:
               command: 'restore'
               projects: '$(RestoreBuildProjects)'
               feedsToUse: 'select'
 
-          - task: UseDotNet@2
+          - task: UseNode@1
             displayName: 'Build'
             inputs:
               command: 'build'
@@ -40,7 +40,7 @@ stages:
               arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
 
 
-          - task: UseDotNet@2
+          - task: UseNode@1
             displayName: 'Publish'
             inputs:
               command: 'publish'
