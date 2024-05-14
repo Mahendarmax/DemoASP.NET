@@ -1,44 +1,52 @@
 trigger:
-- master
+  - master
 
-pool:
-  vmImage: 'windows-2022'
+stages:
+  - stage: Build
+    displayName: 'Build .NET Application'
+    jobs:
+      - job: Build
+        displayName: 'Build'
+        pool:
+          vmImage: 'windows-latest'
 
-variables:
-  RestoreBuildProjects: '**/*.csproj'
+        variables:
+          RestoreBuildProjects: '**/*.csproj'
+          targetRuntime: 'win-x64'
 
-steps:
-  - task: UseDotNet@2
-    displayName: Install .NET 8.0.204 SDK
-    inputs:
-      version: '8.0.204'
-      packageType: sdk
+        steps:
+          - task: UseDotNet@2
+            displayName: 'Install .NET Core SDK.'
+            inputs:
+              version: 8.0.204
+              performMultiLevelLookup: true
+              includePreviewVersions: true  # Required for preview versions
 
-  - task: UseDotNet@2
-    displayName: Restore
-    inputs:
-      command: restore
-      projects: |
-        '$(RestoreBuildProjects)'
+          - task: UseDotNet@2
+            displayName: Restore
+            inputs:
+              command: 'restore'
+              projects: '$(RestoreBuildProjects)'
+              feedsToUse: 'select'
 
-  - task: UseDotNet@2
-    displayName: Build (with Output Verification)
-    inputs:
-      command: build
-      projects: |
-        '$(RestoreBuildProjects)'
-      arguments: '--configuration $(BuildConfiguration)'
-  # Added check step:
-      postBuildAction: 'publish'  # Attempt to publish even if build fails (for verification)
+          - task: UseDotNet@2
+            displayName: Build
+            inputs:
+              command: 'build'
+              projects: '$(RestoreBuildProjects)'
+              arguments: '--configuration $(BuildConfiguration)'
 
-  - task: PublishBuildArtifacts@1
-    condition: succeeded()  # Only publish if previous step succeeds (build output exists)
-    displayName: 'Publish Artifact: drop'
-    inputs:
-      PathtoPublish: '$(build.artifactstagingdirectory)'
+          - task: UseDotNet@2
+            displayName: 'Publish'
+            inputs:
+              command: 'publish'
+              publishWebProjects: false
+              projects: '$(RestoreBuildProjects)'
+              arguments: '--configuration $(BuildConfiguration) --runtime $(targetRuntime) --output $(System.DefaultWorkingDirectory)'
 
-  # Added error handling step (optional):
-  - script: echo Build failed, artifacts not published. Check logs for details.
-    displayName: 'Build Failure Notification'
-    condition: failed()  # Only run if previous step fails
-
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish Artifact'
+            inputs:
+              PathtoPublish: '$(System.DefaultWorkingDirectory)'
+              condition: succeeded()  # Publish only on success
+              zipAfterPublish: true
