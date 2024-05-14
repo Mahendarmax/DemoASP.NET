@@ -1,0 +1,44 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-2022'
+
+variables:
+  RestoreBuildProjects: '**/*.csproj'
+
+steps:
+  - task: UseDotNet@2
+    displayName: Install .NET 8.0.204 SDK
+    inputs:
+      version: '8.0.204'
+      packageType: sdk
+
+  - task: UseDotNet@2
+    displayName: Restore
+    inputs:
+      command: restore
+      projects: |
+        '$(RestoreBuildProjects)'
+
+  - task: UseDotNet@2
+    displayName: Build (with Output Verification)
+    inputs:
+      command: build
+      projects: |
+        '$(RestoreBuildProjects)'
+      arguments: '--configuration $(BuildConfiguration)'
+  # Added check step:
+      postBuildAction: 'publish'  # Attempt to publish even if build fails (for verification)
+
+  - task: PublishBuildArtifacts@1
+    condition: succeeded()  # Only publish if previous step succeeds (build output exists)
+    displayName: 'Publish Artifact: drop'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)'
+
+  # Added error handling step (optional):
+  - script: echo Build failed, artifacts not published. Check logs for details.
+    displayName: 'Build Failure Notification'
+    condition: failed()  # Only run if previous step fails
+
