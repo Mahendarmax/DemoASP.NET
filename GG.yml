@@ -52,5 +52,5 @@ stages:
             inputs:
               buildType: 'current'
               downloadType: 'single'
-              artifactName: 'drop'
+              artifactName: '/*.zip'
               downloadPath: '$(System.ArtifactsDirectory)'
