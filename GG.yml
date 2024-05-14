@@ -37,16 +37,9 @@ stages:
               feedsToUse: 'config'
               nugetConfigPath: 'NuGet.config'
               projects: '$(RestoreBuildProjects)'
-              arguments: '--configuration $(BuildConfiguration)'
+              arguments: '--configuration $(BuildConfiguration) --output $(System.DefaultWorkingDirectory)'
 
-          - task: UseDotNet@2
-            displayName: 'Publish'
-            inputs:
-              command: 'publish'
-              publishWebProjects: false
-              projects: '$(RestoreBuildProjects)'
-              arguments: '--configuration $(BuildConfiguration) --runtime $(targetRuntime) --output $(Build.ArtifactStagingDirectory)'
-              zipAfterPublish: true
+        
 
           - powershell: |
               New-Item -ItemType Directory -Path $(ArtifactFolder) -Force
