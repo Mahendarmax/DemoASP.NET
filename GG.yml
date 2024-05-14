@@ -34,7 +34,7 @@ stages:
             inputs:
               command: 'build'
               projects: '$(RestoreBuildProjects)'
-              arguments: '--configuration $(BuildConfiguration)'
+              arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
 
           - task: UseDotNet@2
             displayName: 'Publish'
