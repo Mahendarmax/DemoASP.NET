@@ -47,10 +47,8 @@ stages:
               arguments: '--configuration $(BuildConfiguration) --runtime $(targetRuntime) --output $(Build.ArtifactStagingDirectory)'
               zipAfterPublish: true
 
-          
-          - task: DownloadBuildArtifacts@1
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish Artifact'
             inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              artifactName: '/*.zip'
-              downloadPath: '$(Build.ArtifactStagingDirectory)'
+              PathtoPublish: '$(build.artifactstagingdirectory)'
+              condition: succeededOrFailed()
