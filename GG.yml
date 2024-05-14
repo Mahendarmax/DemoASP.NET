@@ -42,10 +42,10 @@ stages:
             displayName: 'Publish'
             inputs:
               command: 'publish'
-              publishWebProjects: False
+              publishWebProjects: false
               projects: '$(RestoreBuildProjects)'
-              arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-              zipAfterPublish: True
+              arguments: '--configuration $(BuildConfiguration) --runtime $(targetRuntime) --output $(Build.ArtifactStagingDirectory)'
+              zipAfterPublish: true
 
           - task: PublishBuildArtifacts@1
             displayName: 'Publish Build artifacts'
