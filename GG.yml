@@ -36,7 +36,7 @@ stages:
               feedsToUse: config
               nugetConfigPath: NuGet.config
               projects: '$(RestoreBuildProjects)'
-              arguments: '--configuration Release'
+              arguments: '--configuration $(BuildConfiguration)'
 
           - task: UseDotNet@2
             displayName: 'Publish'
