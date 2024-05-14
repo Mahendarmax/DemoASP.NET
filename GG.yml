@@ -47,12 +47,10 @@ stages:
               arguments: '--configuration $(BuildConfiguration) --runtime $(targetRuntime) --output $(Build.ArtifactStagingDirectory)'
               zipAfterPublish: true
 
-          - task: ArchiveFiles@2
+          
+          - task: CopyPublishBuildArtifacts@1
             inputs:
-              rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
-              includeRootFolder: false
-              archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/artifact.zip'
-              replaceExistingArchive: true'
-              ArtifactName: 'drop'
-              publishLocation: 'Container'
+              CopyRoot: '$(Build.ArtifactStagingDirectory)'
+              Contents: '*'
+              ArtifactName: 'Artifact'
+              ArtifactType: 'Container'
