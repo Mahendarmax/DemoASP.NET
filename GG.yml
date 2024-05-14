@@ -41,6 +41,11 @@ stages:
 
           - powershell: |
               New-Item -ItemType Directory -Path $(ArtifactFolder) -Force
+              $lockFilePath = Join-Path $(System.DefaultWorkingDirectory) 'lockfile.lock'
+              While (Test-Path $lockFilePath) {
+                  Write-Host "Waiting for file locks to release..."
+                  Start-Sleep -Seconds 10
+              }
               Move-Item -Path "$(System.DefaultWorkingDirectory)\*" -Destination $(ArtifactFolder)
             displayName: 'Move artifacts to folder'
 
