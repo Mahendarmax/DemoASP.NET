@@ -53,4 +53,4 @@ stages:
               buildType: 'current'
               downloadType: 'single'
               artifactName: '/*.zip'
-              downloadPath: '$(System.ArtifactsDirectory)'
+              downloadPath: '$(Build.ArtifactStagingDirectory)'
