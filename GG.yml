@@ -43,10 +43,10 @@ stages:
               publishWebProjects: false
               projects: '$(RestoreBuildProjects)'
               arguments: '--configuration $(BuildConfiguration) --runtime $(targetRuntime) --output $(System.DefaultWorkingDirectory)'
-
+              zipAfterPublish: true
           - task: PublishBuildArtifacts@1
             displayName: 'Publish Artifact'
             inputs:
               PathtoPublish: '$(System.DefaultWorkingDirectory)'
               condition: succeeded()  # Publish only on success
-              zipAfterPublish: true
+              
